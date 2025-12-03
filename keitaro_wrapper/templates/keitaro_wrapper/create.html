@@ -1,0 +1,76 @@
+{% load navigation %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать кампанию – Adrobot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="{% static 'css/create.css' %}" rel="stylesheet">
+    <script src="{% static 'js/create.js' %}" defer></script>
+</head>
+<body>
+
+{% if messages %}
+<div class="toast-wrapper" id="toast-wrapper">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="surface">
+    <header>
+        <div>
+            <h1 class="title">Создать кампанию</h1>
+            <p class="subtitle">Соберите основные параметры и свяжите их с Keitaro</p>
+        </div>
+
+        <div class="nav-wrap">
+            {% nav_items as items %}
+            {% for item in items %}
+                <a class="nav-pill{% if item.url == request.path %} primary{% endif %}" href="{{ item.url }}">
+                    {{ item.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <h2>Основные параметры</h2>
+            <p>Введите базовую информацию о кампании. Интеграция с Keitaro уже подготовлена — остаётся заполнить форму.</p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="field-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="form-grid">
+                    {% for field in form.visible_fields %}
+                        <div class="field">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="field-errors">{{ field.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="actions">
+                    <button type="submit">Сохранить кампанию</button>
+                    <button type="button" class="ghost-btn" onclick="window.location.href='{{ request.META.HTTP_REFERER|default:"/" }}'">
+                        Назад
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

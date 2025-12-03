@@ -1,0 +1,72 @@
+{% load navigation %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Кампания {{ campaign.name }} – Adrobot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/campaign_detail.css' %}">
+</head>
+<body class="campaign-detail-page">
+{% csrf_token %}
+<div class="surface">
+    <nav class="nav-wrap">
+        {% nav_items as items %}
+        {% for item in items %}
+            <a class="nav-item{% if item.url == request.path %} active{% endif %}" href="{{ item.url }}">
+                {{ item.title }}
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if campaign %}
+        <h1>{{ campaign.name }}</h1>
+        <p class="meta">ID {{ campaign.id }} · Статус: {{ campaign.state }}</p>
+
+        <section class="panel">
+            <h2>Основное</h2>
+            <div class="grid">
+                <div class="field">
+                    <div class="field-label">Alias</div>
+                    <div class="field-value">{{ campaign.alias }}</div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Тип</div>
+                    <div class="field-value">{{ campaign.type }}</div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Cookies TTL</div>
+                    <div class="field-value">{{ campaign.cookies_ttl }} ч</div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Traffic source</div>
+                    <div class="field-value">{{ campaign.traffic_source_id }}</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" id="fetch-streams-btn"
+                        data-url="{% url 'keitaro_wrapper:campaign_streams' campaign.id %}"
+                        data-offers-url="{% url 'keitaro_wrapper:offers' %}"
+                        data-flow-update-url="{% url 'keitaro_wrapper:flow_update' 0 %}"
+                        data-offer-update-url-template="{% url 'keitaro_wrapper:flow_update_offer' 0 %}"
+                        data-offer-flows-url-template="{% url 'keitaro_wrapper:offer_flows' 0 %}">
+                    Получить потоки из Keitaro
+                </button>
+            </div>
+
+            <!-- ✅ Только контейнер — содержимое рендерится JS -->
+            <div id="flows-output" class="flows">
+                <p>Нажмите «Получить потоки из Keitaro», чтобы загрузить данные.</p>
+            </div>
+        </section>
+
+    {% else %}
+        <p>Кампания не найдена.</p>
+    {% endif %}
+</div>
+
+<script src="{% static 'js/campaign_detail.js' %}"></script>
+</body>
+</html>

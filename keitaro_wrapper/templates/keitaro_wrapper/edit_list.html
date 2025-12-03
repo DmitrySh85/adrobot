@@ -1,0 +1,45 @@
+{% load navigation %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать кампанию – Adrobot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="{% static 'css/edit_list.css' %}">
+</head>
+<body>
+<div class="surface">
+    <nav class="nav-wrap">
+        {% nav_items as items %}
+        {% for item in items %}
+            <a class="nav-item{% if item.url == request.path %} active{% endif %}" href="{{ item.url }}">
+                {{ item.title }}
+            </a>
+        {% endfor %}
+    </nav>
+
+    <h1>Список кампаний</h1>
+    <p class="subtitle">Выберите кампанию, чтобы перейти к её настройке.</p>
+
+    {% if campaigns %}
+        <div class="list">
+            {% for campaign in campaigns %}
+                <a class="campaign-item" href="{% url 'keitaro_wrapper:campaign_detail' campaign.id %}">
+                    <span class="campaign-name">{{ campaign.name }}</span>
+                    <span class="campaign-meta">ID {{ campaign.id }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            Кампаний пока нет. Создайте первую на странице «Создать кампанию».
+        </div>
+    {% endif %}
+</div>
+
+
+</body>
+</html>
