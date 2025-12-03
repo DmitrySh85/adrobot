@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'keitaro_wrapper.apps.KeitaroWrapperConfig',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

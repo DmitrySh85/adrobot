@@ -607,7 +607,9 @@ class OfferFlowUpdateView(View):
 
 class OfferFlowsView(View):
     def get(self, request, flow_id: int):
-        offer_flows = OfferFlow.objects.filter(flow__keitaro_flow_id=flow_id)
+        offer_flows = OfferFlow.objects.filter(flow__keitaro_flow_id=flow_id).prefetch_related(
+            "offer", "flow"
+        )
         return JsonResponse(
             {"offer_flows": [
                 {
